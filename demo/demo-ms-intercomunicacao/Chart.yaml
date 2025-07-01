@@ -1,0 +1,6 @@
+apiVersion: v2
+name: demo-ms-intercomunicacao
+description: Helm chart para o microserviço demo-ms-intercomunicacao
+type: application
+version: 0.1.0
+appVersion: "1.0"

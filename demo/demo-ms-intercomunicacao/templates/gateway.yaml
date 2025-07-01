@@ -1,0 +1,27 @@
+{{- if .Values.gateway.enabled }}
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: {{ .Values.gateway.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    istio: {{ .Values.gateway.selector | default "ingressgateway" }}
+  servers:
+    - hosts:
+        - {{ .Values.gateway.host }}
+      port:
+        name: http
+        number: 80
+        protocol: HTTP
+      tls:
+        httpsRedirect: true
+    - hosts:
+        - {{ .Values.gateway.host }}
+      port:
+        name: https-workloads
+        number: 443
+        protocol: HTTP
+      tls:
+        mode: PASSTHROUGH
+{{- end }}

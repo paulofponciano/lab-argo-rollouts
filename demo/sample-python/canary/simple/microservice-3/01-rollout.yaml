@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: microservice-3
+  namespace: sample-api-python
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: microservice-3
+  template:
+    metadata:
+      annotations:
+        instrumentation.opentelemetry.io/inject-python: "o11y/python-auto-instrumentation"
+      labels:
+        app: microservice-3
+    spec:
+      containers:
+      - name: app
+        image: paulofponciano/demo-ms-intercomunicacao:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: TITLE
+          value: "Microservice 3"
+        - name: RESPONSE_TIME
+          value: "500"
+        - name: EXTERNAL_CALL_URL
+          value: ""
+        - name: EXTERNAL_CALL_METHOD
+          value: "GET"
+  strategy:
+    canary:
+      steps:
+        - setWeight: 0
+        - pause: { }
+        - setWeight: 10
+        - pause: { }
+        - setWeight: 20
+        - pause: { }
+        - setWeight: 40
+        - pause: { }
+        - setWeight: 80
+        - pause: { }
+        - setWeight: 100

@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: sample-api-python
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - name: microservice-1
+            path: microservice-1
+          - name: microservice-2
+            path: microservice-2
+          - name: microservice-3
+            path: microservice-3
+  template:
+    metadata:
+      name: '{{name}}'
+    spec:
+      project: "apps"
+      source:
+        repoURL: https://github.com/paulofponciano/lab-argo-rollouts.git
+        targetRevision: HEAD
+        path: demo/sample-python/canary/simple/{{path}}
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: sample-api-python
+      syncPolicy:
+        automated: {}

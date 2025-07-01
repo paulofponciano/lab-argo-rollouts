@@ -1,0 +1,30 @@
+{{- if .Values.istio.enabled }}
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ .Values.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  hosts:
+    {{- if .Values.gateway.enabled }}
+    - {{ .Values.gateway.host }}
+    {{- else }}
+    - {{ printf "%s.%s.svc.cluster.local" .Values.name .Values.namespace }}
+    {{- end }}
+  gateways:
+    {{- if .Values.gateway.enabled }}
+    - {{ .Values.gateway.name }}
+    {{- else }}
+    - mesh
+    {{- end }}
+  http:
+    - route:
+        - destination:
+            host: {{ .Values.name }}
+            port:
+              number: {{ .Values.service.port | default 5000 }}
+      retries:
+        attempts: {{ .Values.istio.retries.attempts }}
+        perTryTimeout: {{ .Values.istio.retries.perTryTimeout }}
+        retryOn: {{ .Values.istio.retries.retryOn }}
+{{- end }}

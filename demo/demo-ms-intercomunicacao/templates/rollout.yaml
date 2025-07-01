@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: {{ .Values.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.name }}
+  template:
+    metadata:
+      annotations:
+        instrumentation.opentelemetry.io/inject-python: "o11y/python-auto-instrumentation"
+      labels:
+        app: {{ .Values.name }}
+    spec:
+      containers:
+        - name: app
+          image: {{ .Values.image }}
+          ports:
+            - containerPort: {{ .Values.service.port | default 5000 }}
+          env:
+{{- toYaml .Values.env | nindent 12 }}
+  strategy:
+    canary:
+      steps:
+{{ toYaml .Values.strategy.canary.steps | nindent 6 }}
