@@ -37,16 +37,17 @@ spec:
               port: 5000
               targetPort: 5000
             istio:
-              enabled: true
-              retries:
-                attempts: 2
-                perTryTimeout: 500ms
-                retryOn: connect-failure,refused-stream,unavailable,cancelled,503
-            gateway:
-              enabled: false
-              name: demo-ms-1-gateway
-              host: demo-ms-intercomunicacao.sevira.cloud
-              selector: ingressgateway
+              virtualService:
+                enabled: true
+                retries:
+                  attempts: 2
+                  perTryTimeout: 500ms
+                  retryOn: connect-failure,refused-stream,unavailable,cancelled,503
+              gateway:
+                enabled: false
+                name: demo-ms-1-gateway
+                host: demo-ms-intercomunicacao.sevira.cloud
+                selector: ingressgateway
             strategy:
               canary:
                 steps:
