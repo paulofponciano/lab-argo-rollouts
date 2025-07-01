@@ -37,7 +37,7 @@ spec:
               port: 5000
               targetPort: 5000
             istio:
-              enabled: false
+              enabled: true
               retries:
                 attempts: 2
                 perTryTimeout: 500ms
