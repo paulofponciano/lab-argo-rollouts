@@ -12,7 +12,7 @@ spec:
     metadata:
       name: demo-ms-1
     spec:
-      project: "apps"
+      project: "lab-apps"
       source:
         repoURL: 'oci://registry-1.docker.io/paulofponciano'
         chart: demo-ms-intercomunicacao
