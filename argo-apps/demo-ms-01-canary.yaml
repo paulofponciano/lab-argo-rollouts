@@ -1,69 +1,69 @@
-apiVersion: argoproj.io/v1alpha1
-kind: ApplicationSet
-metadata:
-  name: demo-ms-1
-  namespace: argocd
-spec:
-  generators:
-    - list:
-        elements:
-          - cluster: https://kubernetes.default.svc
-  template:
-    metadata:
-      name: demo-ms-1
-    spec:
-      project: "lab-apps"
-      source:
-        repoURL: 'registry-1.docker.io/paulofponciano'
-        chart: demo-ms-intercomunicacao
-        targetRevision: 0.1.0
-        helm:
-          releaseName: demo-ms-1
-          valuesObject:
-            name: demo-ms-1
-            namespace: demo
-            image: paulofponciano/demo-ms-intercomunicacao:latest
-            replicas: 1
-            env:
-              - name: TITLE
-                value: "Microservice 1"
-              - name: RESPONSE_TIME
-                value: "500"
-              - name: EXTERNAL_CALL_URL
-                value: "http://demo-ms-2.demo.svc.cluster.local:5000"
-              - name: EXTERNAL_CALL_METHOD
-                value: "GET"
-            service:
-              port: 5000
-              targetPort: 5000
-            istio:
-              virtualService:
-                enabled: true
-                retries:
-                  attempts: 2
-                  perTryTimeout: 500ms
-                  retryOn: connect-failure,refused-stream,unavailable,cancelled,503
-              gateway:
-                enabled: false
-                name: demo-ms-1-gateway
-                host: demo-ms-intercomunicacao.sevira.cloud
-                selector: ingressgateway
-            strategy:
-              canary:
-                steps:
-                  - setWeight: 0
-                  - pause: {}
-                  - setWeight: 10
-                  - pause: {}
-                  - setWeight: 20
-                  - pause: {}
-                  - setWeight: 40
-                  - pause: {}
-                  - setWeight: 80
-                  - pause: {}
-                  - setWeight: 100
-      destination:
-        server: '{{ cluster }}'
-        namespace: argocd
-      syncPolicy:
-        automated: {}
+# apiVersion: argoproj.io/v1alpha1
+# kind: ApplicationSet
+# metadata:
+#   name: demo-ms-1
+#   namespace: argocd
+# spec:
+#   generators:
+#     - list:
+#         elements:
+#           - cluster: https://kubernetes.default.svc
+#   template:
+#     metadata:
+#       name: demo-ms-1
+#     spec:
+#       project: "lab-apps"
+#       source:
+#         repoURL: 'registry-1.docker.io/paulofponciano'
+#         chart: demo-ms-intercomunicacao
+#         targetRevision: 0.1.0
+#         helm:
+#           releaseName: demo-ms-1
+#           valuesObject:
+#             name: demo-ms-1
+#             namespace: demo
+#             image: paulofponciano/demo-ms-intercomunicacao:latest
+#             replicas: 1
+#             env:
+#               - name: TITLE
+#                 value: "Microservice 1"
+#               - name: RESPONSE_TIME
+#                 value: "500"
+#               - name: EXTERNAL_CALL_URL
+#                 value: "http://demo-ms-2.demo.svc.cluster.local:5000"
+#               - name: EXTERNAL_CALL_METHOD
+#                 value: "GET"
+#             service:
+#               port: 5000
+#               targetPort: 5000
+#             istio:
+#               virtualService:
+#                 enabled: true
+#                 retries:
+#                   attempts: 2
+#                   perTryTimeout: 500ms
+#                   retryOn: connect-failure,refused-stream,unavailable,cancelled,503
+#               gateway:
+#                 enabled: false
+#                 name: demo-ms-1-gateway
+#                 host: demo-ms-intercomunicacao.sevira.cloud
+#                 selector: ingressgateway
+#             strategy:
+#               canary:
+#                 steps:
+#                   - setWeight: 0
+#                   - pause: {}
+#                   - setWeight: 10
+#                   - pause: {}
+#                   - setWeight: 20
+#                   - pause: {}
+#                   - setWeight: 40
+#                   - pause: {}
+#                   - setWeight: 80
+#                   - pause: {}
+#                   - setWeight: 100
+#       destination:
+#         server: '{{ cluster }}'
+#         namespace: argocd
+#       syncPolicy:
+#         automated: {}
