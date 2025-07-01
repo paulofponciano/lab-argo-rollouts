@@ -19,7 +19,7 @@ spec:
         - name: app
           image: {{ .Values.image }}
           ports:
-            - containerPort: {{ .Values.service.port | default 5000 }}
+            - containerPort: {{ .Values.service.targetPort | default 5000 }}
           env:
 {{- toYaml .Values.env | nindent 12 }}
   strategy:
