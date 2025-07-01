@@ -20,7 +20,7 @@ spec:
   http:
     - route:
         - destination:
-            host: {{ .Values.name }}
+            host: {{ printf "%s.%s.svc.cluster.local" .Values.name .Values.namespace }}
             port:
               number: {{ .Values.service.port | default 5000 }}
       retries:
