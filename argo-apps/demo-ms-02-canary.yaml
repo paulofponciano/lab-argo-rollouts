@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: demo-ms-1
+  name: demo-ms-2
   namespace: argocd
 spec:
   generators:
@@ -10,7 +10,7 @@ spec:
           - cluster: https://kubernetes.default.svc
   template:
     metadata:
-      name: demo-ms-1
+      name: demo-ms-2
     spec:
       project: "lab-apps"
       source:
@@ -18,19 +18,19 @@ spec:
         chart: demo-ms-intercomunicacao
         targetRevision: 0.1.0
         helm:
-          releaseName: demo-ms-1
+          releaseName: demo-ms-2
           valuesObject:
-            name: demo-ms-1
+            name: demo-ms-2
             namespace: demo
             image: paulofponciano/demo-ms-intercomunicacao:latest
             replicas: 1
             env:
               - name: TITLE
-                value: "Microservice 1"
+                value: "Microservice 2"
               - name: RESPONSE_TIME
                 value: "500"
               - name: EXTERNAL_CALL_URL
-                value: "http://demo-ms-2.demo.svc.cluster.local:5000"
+                value: "http://demo-ms-3.demo.svc.cluster.local:5000"
               - name: EXTERNAL_CALL_METHOD
                 value: "GET"
             service:
@@ -44,7 +44,7 @@ spec:
                 retryOn: connect-failure,refused-stream,unavailable,cancelled,503
             gateway:
               enabled: false
-              name: demo-ms-1-gateway
+              name: demo-ms-2-gateway
               host: demo-ms-intercomunicacao.sevira.cloud
               selector: ingressgateway
             strategy:
