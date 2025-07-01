@@ -14,7 +14,7 @@ spec:
     spec:
       project: "lab-apps"
       source:
-        repoURL: 'oci://registry-1.docker.io/paulofponciano'
+        repoURL: 'registry-1.docker.io/paulofponciano'
         chart: demo-ms-intercomunicacao
         targetRevision: 0.1.0
         helm:
