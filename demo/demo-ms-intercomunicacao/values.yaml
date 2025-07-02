@@ -14,7 +14,9 @@ env:
     value: "GET"
 
 service:
+  portName: http
   port: 5000
+  protocol: TCP
   targetPort: 5000
 
 istio:
@@ -24,7 +26,7 @@ istio:
       attempts: 2
       perTryTimeout: 500ms
       retryOn: connect-failure,refused-stream,unavailable,cancelled,503
-      
+
   gateway:
     enabled: false
     name: demo-ms-intercomunicacao-gateway

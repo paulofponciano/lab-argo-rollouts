@@ -8,6 +8,7 @@ spec:
   selector:
     app: {{ .Values.name }}
   ports:
-    - protocol: {{ .Values.service.protocol | default "TCP" }}
+    - name: {{ .Values.service.portName | default "http" }}
       port: {{ .Values.service.port | default 5000 }}
       targetPort: {{ .Values.service.targetPort | default 5000 }}
+      protocol: {{ .Values.service.protocol | default "TCP" }}
