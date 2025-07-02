@@ -17,14 +17,12 @@ spec:
     {{- else }}
     - mesh
     {{- end }}
-  http:
-    - route:
+  tcp:
+    - match:
+        - port: {{ .Values.service.port | default 5000 }}
+      route:
         - destination:
             host: {{ printf "%s.%s.svc.cluster.local" .Values.name .Values.namespace }}
             port:
               number: {{ .Values.service.port | default 5000 }}
-      retries:
-        attempts: {{ .Values.istio.virtualService.retries.attempts }}
-        perTryTimeout: {{ .Values.istio.virtualService.retries.perTryTimeout }}
-        retryOn: {{ .Values.istio.virtualService.retries.retryOn }}
 {{- end }}
