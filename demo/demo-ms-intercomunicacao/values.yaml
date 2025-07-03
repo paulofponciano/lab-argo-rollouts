@@ -22,14 +22,14 @@ service:
 istio:
   virtualService:
     enabled: true
+    protocol: tcp
     retries:
       attempts: 2
       perTryTimeout: 500ms
       retryOn: connect-failure,refused-stream,unavailable,cancelled,503
-
   gateway:
     enabled: false
-    name: demo-ms-intercomunicacao-gateway
+    name: demo-ms-1-gateway
     host: demo-ms-intercomunicacao.sevira.cloud
     selector: ingressgateway
 

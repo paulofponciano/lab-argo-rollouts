@@ -17,6 +17,18 @@ spec:
     {{- else }}
     - mesh
     {{- end }}
+  {{- if eq (upper .Values.istio.virtualService.protocol) "HTTP" }}
+  http:
+    - route:
+        - destination:
+            host: {{ printf "%s.%s.svc.cluster.local" .Values.name .Values.namespace }}
+            port:
+              number: {{ .Values.service.port | default 5000 }}
+      retries:
+        attempts: {{ .Values.istio.virtualService.retries.attempts }}
+        perTryTimeout: {{ .Values.istio.virtualService.retries.perTryTimeout }}
+        retryOn: {{ .Values.istio.virtualService.retries.retryOn }}
+  {{- else if eq (upper .Values.istio.virtualService.protocol) "TCP" }}
   tcp:
     - match:
         - port: {{ .Values.service.port | default 5000 }}
@@ -25,4 +37,5 @@ spec:
             host: {{ printf "%s.%s.svc.cluster.local" .Values.name .Values.namespace }}
             port:
               number: {{ .Values.service.port | default 5000 }}
+  {{- end }}
 {{- end }}
