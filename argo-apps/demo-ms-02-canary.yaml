@@ -52,7 +52,7 @@ spec:
                 host: demo-ms-intercomunicacao.sevira.cloud
                 selector: ingressgateway
             prometheus:
-              scrape: true
+              scrape: false
               path: /metrics
               port: 5000
             livenessProbe:
