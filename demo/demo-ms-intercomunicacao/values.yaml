@@ -18,12 +18,16 @@ livenessProbe:
   path: /healthz
   initialDelaySeconds: 5
   periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 10
 
 readinessProbe:
   enabled: true
   path: /ready
   initialDelaySeconds: 5
   periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 10
 
 service:
   portName: http

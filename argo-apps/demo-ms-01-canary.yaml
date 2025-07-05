@@ -16,7 +16,7 @@ spec:
       source:
         repoURL: 'registry-1.docker.io/paulofponciano'
         chart: demo-ms-intercomunicacao
-        targetRevision: 0.1.7
+        targetRevision: 0.1.8
         helm:
           releaseName: demo-ms-1
           valuesObject:
@@ -60,11 +60,15 @@ spec:
               path: /healthz
               initialDelaySeconds: 5
               periodSeconds: 10
+              timeoutSeconds: 5
+              failureThreshold: 3
             readinessProbe:
               enabled: true
               path: /ready
               initialDelaySeconds: 5
               periodSeconds: 10
+              timeoutSeconds: 5
+              failureThreshold: 3
             strategy:
               canary:
                 steps:
