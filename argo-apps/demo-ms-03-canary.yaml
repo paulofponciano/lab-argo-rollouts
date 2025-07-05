@@ -16,7 +16,7 @@ spec:
       source:
         repoURL: 'registry-1.docker.io/paulofponciano'
         chart: demo-ms-intercomunicacao
-        targetRevision: 0.1.6
+        targetRevision: 0.1.7
         helm:
           releaseName: demo-ms-3
           valuesObject:
@@ -55,6 +55,16 @@ spec:
                 scrape: true
                 path: /metrics
                 port: 5000
+            livenessProbe:
+              enabled: true
+              path: /healthz
+              initialDelaySeconds: 5
+              periodSeconds: 10
+            readinessProbe:
+              enabled: true
+              path: /ready
+              initialDelaySeconds: 5
+              periodSeconds: 10
             strategy:
               canary:
                 steps:

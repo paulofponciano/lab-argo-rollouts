@@ -13,6 +13,18 @@ env:
   - name: EXTERNAL_CALL_METHOD
     value: "GET"
 
+livenessProbe:
+  enabled: true
+  path: /healthz
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
+readinessProbe:
+  enabled: true
+  path: /ready
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
 service:
   portName: http
   port: 5000
