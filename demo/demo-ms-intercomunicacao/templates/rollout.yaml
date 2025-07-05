@@ -12,6 +12,11 @@ spec:
     metadata:
       annotations:
         instrumentation.opentelemetry.io/inject-python: "o11y/python-auto-instrumentation"
+        {{- if .Values.prometheus.scrape }}
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "{{ .Values.prometheus.path }}"
+        prometheus.io/port: "{{ .Values.prometheus.port }}"
+        {{- end }}
       labels:
         app: {{ .Values.name }}
     spec:

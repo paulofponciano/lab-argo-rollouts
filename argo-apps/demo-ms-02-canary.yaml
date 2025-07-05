@@ -51,6 +51,10 @@ spec:
                 name: demo-ms-2-gateway
                 host: demo-ms-intercomunicacao.sevira.cloud
                 selector: ingressgateway
+            prometheus:
+              scrape: true
+              path: /metrics
+              port: 5000
             strategy:
               canary:
                 steps:

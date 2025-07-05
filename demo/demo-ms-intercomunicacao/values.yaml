@@ -47,3 +47,8 @@ strategy:
       - setWeight: 80
       - pause: {}
       - setWeight: 100
+
+prometheus:
+  scrape: true
+  path: /metrics
+  port: 5000
