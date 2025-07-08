@@ -12,6 +12,8 @@ env:
     value: ""
   - name: EXTERNAL_CALL_METHOD
     value: "GET"
+  - name: APP_VERSION
+    value: "0.1.0"
 
 livenessProbe:
   enabled: true
