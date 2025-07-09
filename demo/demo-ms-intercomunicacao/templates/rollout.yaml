@@ -62,6 +62,13 @@ spec:
             {{- end }}
 {{- end }}
   strategy:
+{{- if eq .Values.strategy.type "canary" }}
     canary:
       steps:
-{{ toYaml .Values.strategy.canary.steps | nindent 6 }}
+{{ toYaml .Values.strategy.canary.steps | nindent 8 }}
+{{- else if eq .Values.strategy.type "blueGreen" }}
+    blueGreen:
+      activeService: {{ .Values.strategy.blueGreen.activeService }}
+      previewService: {{ .Values.strategy.blueGreen.previewService }}
+      autoPromotionEnabled: {{ .Values.strategy.blueGreen.autoPromotionEnabled }}
+{{- end }}
