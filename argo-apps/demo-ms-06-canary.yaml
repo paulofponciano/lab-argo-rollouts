@@ -1,0 +1,89 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: demo-ms-6
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: https://kubernetes.default.svc
+  template:
+    metadata:
+      name: demo-ms-6
+    spec:
+      project: "lab-apps"
+      source:
+        repoURL: 'registry-1.docker.io/paulofponciano'
+        chart: demo-ms-intercomunicacao
+        targetRevision: 0.1.10
+        helm:
+          releaseName: demo-ms-6
+          valuesObject:
+            name: demo-ms-6
+            namespace: demo
+            image: paulofponciano/demo-ms-intercomunicacao:latest
+            replicas: 1
+            env:
+              - name: TITLE
+                value: "Microservice 6"
+              - name: RESPONSE_TIME
+                value: "500"
+              - name: EXTERNAL_CALL_URL
+                value: ""
+              - name: EXTERNAL_CALL_METHOD
+                value: "GET"
+              - name: APP_VERSION
+                value: "0.1.4"
+            service:
+              portName: http
+              port: 5000
+              protocol: TCP
+              targetPort: 5000
+            istio:
+              virtualService:
+                enabled: true
+                protocol: tcp
+                retries:
+                  attempts: 2
+                  perTryTimeout: 500ms
+                  retryOn: connect-failure,refused-stream,unavailable,cancelled,503
+              gateway:
+                enabled: false
+                name: demo-ms-6-gateway
+                host: demo-ms-intercomunicacao.sevira.cloud
+                selector: ingressgateway
+            prometheus:
+                scrape: false
+                path: /metrics
+                port: 5000
+            livenessProbe:
+              enabled: true
+              path: /healthz
+              initialDelaySeconds: 5
+              periodSeconds: 10
+            readinessProbe:
+              enabled: true
+              path: /ready
+              initialDelaySeconds: 5
+              periodSeconds: 10
+            strategy:
+              type: canary
+              canary:
+                steps:
+                  - setWeight: 0
+                  - pause: {}
+                  - setWeight: 10
+                  - pause: {}
+                  - setWeight: 20
+                  - pause: {}
+                  - setWeight: 40
+                  - pause: {}
+                  - setWeight: 80
+                  - pause: {}
+                  - setWeight: 100
+      destination:
+        server: '{{ cluster }}'
+        namespace: argocd
+      syncPolicy:
+        automated: {}
