@@ -20,10 +20,23 @@ spec:
   {{- if eq (upper .Values.istio.virtualService.protocol) "HTTP" }}
   http:
     - route:
+        {{- if eq .Values.strategy.type "canary" }}
         - destination:
             host: {{ printf "%s.%s.svc.cluster.local" .Values.name .Values.namespace }}
             port:
               number: {{ .Values.service.port | default 5000 }}
+          weight: 100
+        - destination:
+            host: {{ printf "%s-canary.%s.svc.cluster.local" .Values.name .Values.namespace }}
+            port:
+              number: {{ .Values.service.port | default 5000 }}
+          weight: 0
+        {{- else }}
+        - destination:
+            host: {{ printf "%s.%s.svc.cluster.local" .Values.name .Values.namespace }}
+            port:
+              number: {{ .Values.service.port | default 5000 }}
+        {{- end }}
       retries:
         attempts: {{ .Values.istio.virtualService.retries.attempts }}
         perTryTimeout: {{ .Values.istio.virtualService.retries.perTryTimeout }}
@@ -33,9 +46,22 @@ spec:
     - match:
         - port: {{ .Values.service.port | default 5000 }}
       route:
+        {{- if eq .Values.strategy.type "canary" }}
         - destination:
             host: {{ printf "%s.%s.svc.cluster.local" .Values.name .Values.namespace }}
             port:
               number: {{ .Values.service.port | default 5000 }}
+          weight: 100
+        - destination:
+            host: {{ printf "%s-canary.%s.svc.cluster.local" .Values.name .Values.namespace }}
+            port:
+              number: {{ .Values.service.port | default 5000 }}
+          weight: 0
+        {{- else }}
+        - destination:
+            host: {{ printf "%s.%s.svc.cluster.local" .Values.name .Values.namespace }}
+            port:
+              number: {{ .Values.service.port | default 5000 }}
+        {{- end }}
   {{- end }}
 {{- end }}
