@@ -38,12 +38,12 @@ spec:
             service:
               portName: http
               port: 5000
-              protocol: TCP
+              protocol: HTTP
               targetPort: 5000
             istio:
               virtualService:
                 enabled: true
-                protocol: tcp
+                protocol: http
                 retries:
                   attempts: 2
                   perTryTimeout: 500ms
