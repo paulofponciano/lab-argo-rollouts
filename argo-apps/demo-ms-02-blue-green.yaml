@@ -58,12 +58,12 @@ spec:
               path: /metrics
               port: 5000
             livenessProbe:
-              enabled: true
+              enabled: false
               path: /healthz
               initialDelaySeconds: 10
               periodSeconds: 10
             readinessProbe:
-              enabled: true
+              enabled: false
               path: /ready
               initialDelaySeconds: 10
               periodSeconds: 10
