@@ -7,7 +7,7 @@ env:
   - name: TITLE
     value: "Microservice 1"
   - name: RESPONSE_TIME
-    value: "500"
+    value: "0"
   - name: EXTERNAL_CALL_URL
     value: ""
   - name: EXTERNAL_CALL_METHOD
