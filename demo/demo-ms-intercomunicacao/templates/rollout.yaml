@@ -64,6 +64,8 @@ spec:
   strategy:
 {{- if eq .Values.strategy.type "canary" }}
     canary:
+      canaryService: {{ .Values.name }}-canary
+      stableService: {{ .Values.name }}
       steps:
 {{ toYaml .Values.strategy.canary.steps | nindent 8 }}
 {{- if and .Values.istio.virtualService.enabled (ne .Values.istio.virtualService.enabled false) }}
