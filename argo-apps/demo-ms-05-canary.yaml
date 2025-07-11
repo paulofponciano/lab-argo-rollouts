@@ -43,7 +43,7 @@ spec:
             istio:
               virtualService:
                 enabled: true
-                protocol: http
+                protocol: tcp
                 retries:
                   attempts: 2
                   perTryTimeout: 500ms
