@@ -56,17 +56,17 @@ strategy:
   type: blueGreen
   canary:
     steps:
-      - setWeight: 0
-      - pause: {}
-      - setWeight: 10
-      - pause: {}
-      - setWeight: 20
-      - pause: {}
-      - setWeight: 40
-      - pause: {}
-      - setWeight: 80
-      - pause: {}
-      - setWeight: 100
+    - setWeight: 0
+    - pause: { }
+    - setWeight: 10
+    - pause: { }
+    - setWeight: 20
+    - pause: { }
+    - setWeight: 40
+    - pause: { }
+    - setWeight: 80
+    - pause: { }
+    - setWeight: 100
   blueGreen:
     activeService: demo-ms-intercomunicacao
     previewService: demo-ms-intercomunicacao-green
