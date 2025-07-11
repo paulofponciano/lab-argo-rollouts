@@ -66,6 +66,14 @@ spec:
     canary:
       steps:
 {{ toYaml .Values.strategy.canary.steps | nindent 8 }}
+{{- if and .Values.istio.virtualService.enabled (ne .Values.istio.virtualService.enabled false) }}
+      trafficRouting:
+        istio:
+          virtualService:
+            name: {{ .Values.name }}
+            routes:
+              - default
+{{- end }}
 {{- else if eq .Values.strategy.type "blueGreen" }}
     blueGreen:
       activeService: {{ .Values.strategy.blueGreen.activeService }}
