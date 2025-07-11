@@ -38,7 +38,7 @@ spec:
             service:
               portName: http
               port: 5000
-              protocol: HTTP
+              protocol: TCP
               targetPort: 5000
             istio:
               virtualService:
