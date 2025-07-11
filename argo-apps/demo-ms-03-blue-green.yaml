@@ -60,12 +60,12 @@ spec:
             livenessProbe:
               enabled: true
               path: /healthz
-              initialDelaySeconds: 5
+              initialDelaySeconds: 10
               periodSeconds: 10
             readinessProbe:
               enabled: true
               path: /ready
-              initialDelaySeconds: 5
+              initialDelaySeconds: 10
               periodSeconds: 10
             strategy:
               type: blueGreen
