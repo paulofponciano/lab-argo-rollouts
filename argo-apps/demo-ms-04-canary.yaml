@@ -63,14 +63,14 @@ spec:
               initialDelaySeconds: 5
               periodSeconds: 10
               timeoutSeconds: 5
-              failureThreshold: 3
+              failureThreshold: 5
             readinessProbe:
               enabled: true
               path: /ready
               initialDelaySeconds: 5
               periodSeconds: 10
               timeoutSeconds: 5
-              failureThreshold: 3
+              failureThreshold: 5
             strategy:
               type: canary
               canary:

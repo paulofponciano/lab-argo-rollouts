@@ -21,7 +21,7 @@ livenessProbe:
   initialDelaySeconds: 5
   periodSeconds: 10
   timeoutSeconds: 5
-  failureThreshold: 10
+  failureThreshold: 5
 
 readinessProbe:
   enabled: true
@@ -29,7 +29,7 @@ readinessProbe:
   initialDelaySeconds: 5
   periodSeconds: 10
   timeoutSeconds: 5
-  failureThreshold: 10
+  failureThreshold: 5
 
 service:
   portName: http

@@ -58,19 +58,19 @@ spec:
               path: /metrics
               port: 5000
             livenessProbe:
-              enabled: true
-              path: /healthz
-              initialDelaySeconds: 10
-              periodSeconds: 10
-              timeoutSeconds: 5
-              failureThreshold: 3
+                enabled: true
+                path: /healthz
+                initialDelaySeconds: 5
+                periodSeconds: 10
+                timeoutSeconds: 5
+                failureThreshold: 5
             readinessProbe:
               enabled: true
               path: /ready
-              initialDelaySeconds: 10
+              initialDelaySeconds: 5
               periodSeconds: 10
               timeoutSeconds: 5
-              failureThreshold: 3
+              failureThreshold: 5
             strategy:
               type: blueGreen
               blueGreen:
