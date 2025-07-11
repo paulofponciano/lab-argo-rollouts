@@ -19,7 +19,8 @@ spec:
     {{- end }}
   {{- if eq (upper .Values.istio.virtualService.protocol) "HTTP" }}
   http:
-    - route:
+    - name: default
+      route:
         {{- if eq .Values.strategy.type "canary" }}
         - destination:
             host: {{ printf "%s.%s.svc.cluster.local" .Values.name .Values.namespace }}
