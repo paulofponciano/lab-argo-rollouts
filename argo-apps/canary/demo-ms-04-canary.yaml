@@ -12,7 +12,7 @@ spec:
     metadata:
       name: demo-ms-4
     spec:
-      project: "lab-apps"
+      project: "lab-apps-canary"
       source:
         repoURL: 'registry-1.docker.io/paulofponciano'
         chart: demo-ms-intercomunicacao
