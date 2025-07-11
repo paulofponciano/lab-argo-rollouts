@@ -28,7 +28,7 @@ spec:
               - name: TITLE
                 value: "Microservice 2"
               - name: RESPONSE_TIME
-                value: "500"
+                value: "0"
               - name: EXTERNAL_CALL_URL
                 value: "http://demo-ms-3.demo.svc.cluster.local:5000"
               - name: EXTERNAL_CALL_METHOD
