@@ -9,4 +9,4 @@ stringData:
   enableOCI: "true"
   type: helm
   url: registry-1.docker.io
-  project: lab-apps
+  project: lab-apps-blue-green
