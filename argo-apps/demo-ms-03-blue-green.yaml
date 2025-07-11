@@ -16,7 +16,7 @@ spec:
       source:
         repoURL: 'registry-1.docker.io/paulofponciano'
         chart: demo-ms-intercomunicacao
-        targetRevision: 0.1.14
+        targetRevision: 0.1.15
         helm:
           releaseName: demo-ms-3
           valuesObject:
@@ -43,7 +43,7 @@ spec:
             istio:
               virtualService:
                 enabled: true
-                protocol: tcp
+                protocol: http
                 retries:
                   attempts: 2
                   perTryTimeout: 500ms
