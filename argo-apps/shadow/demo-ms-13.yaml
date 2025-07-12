@@ -16,7 +16,7 @@ spec:
       source:
         repoURL: 'registry-1.docker.io/paulofponciano'
         chart: demo-ms-intercomunicacao
-        targetRevision: 0.1.19
+        targetRevision: 0.1.21
         helm:
           releaseName: demo-ms-13
           valuesObject:
