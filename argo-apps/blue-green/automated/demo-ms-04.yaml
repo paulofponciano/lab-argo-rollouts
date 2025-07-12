@@ -101,7 +101,7 @@ spec:
                                 - name: http-bench-analysis
                                   image: rogerw/cassowary:v0.14.0
                                   command: ["cassowary"]
-                                  args: ["run", "-u", "http://demo-ms-4-green.demo.svc.cluster.local:5000", "-c", "3", "-n", "1000"]
+                                  args: ["run", "-u", "http://demo-ms-4-green.demo.svc.cluster.local:5000/healthz", "-c", "3", "-n", "1000"]
                                 restartPolicy: Never
                     count: 1
                 - name: 'demo-ms-4-check-success'
@@ -119,7 +119,7 @@ spec:
                               istio_requests_total{destination_service=~"demo-ms-4-green.demo.svc.cluster.local",response_code!~"5.*"}[1m]
                             )) /
                             sum(irate(
-                              istio_requests_total{destination_service=~"demo-ms-4.demo.svc.cluster.local"}[1m]
+                              istio_requests_total{destination_service=~"demo-ms-4-green.demo.svc.cluster.local"}[1m]
                             ))
                       count: 1
       destination:
