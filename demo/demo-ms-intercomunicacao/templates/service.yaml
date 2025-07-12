@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  type: {{ .Values.service.type | default "ClusterIP" }}
+  selector:
+    app: {{ .Values.name }}
+  ports:
+    - name: {{ .Values.service.portName | default "http" }}
+      port: {{ .Values.service.port | default 5000 }}
+      targetPort: {{ .Values.service.targetPort | default 5000 }}
+      protocol: {{ .Values.service.protocol | default "TCP" }}
+
+{{- if eq .Values.strategy.type "blueGreen" }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.name }}-green
+  namespace: {{ .Values.namespace }}
+spec:
+  type: {{ .Values.service.type | default "ClusterIP" }}
+  selector:
+    app: {{ .Values.name }}
+  ports:
+    - name: {{ .Values.service.portName | default "http" }}
+      port: {{ .Values.service.port | default 5000 }}
+      targetPort: {{ .Values.service.targetPort | default 5000 }}
+      protocol: {{ .Values.service.protocol | default "TCP" }}
+{{- end }}
+
+{{- if eq .Values.strategy.type "canary" }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.name }}-canary
+  namespace: {{ .Values.namespace }}
+spec:
+  type: {{ .Values.service.type | default "ClusterIP" }}
+  selector:
+    app: {{ .Values.name }}
+  ports:
+    - name: {{ .Values.service.portName | default "http" }}
+      port: {{ .Values.service.port | default 5000 }}
+      targetPort: {{ .Values.service.targetPort | default 5000 }}
+      protocol: {{ .Values.service.protocol | default "TCP" }}
+{{- end }}
