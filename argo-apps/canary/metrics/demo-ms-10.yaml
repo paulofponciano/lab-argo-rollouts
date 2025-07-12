@@ -1,0 +1,122 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: demo-ms-10
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: https://kubernetes.default.svc
+  template:
+    metadata:
+      name: demo-ms-10
+    spec:
+      project: "lab-apps-canary"
+      source:
+        repoURL: 'registry-1.docker.io/paulofponciano'
+        chart: demo-ms-intercomunicacao
+        targetRevision: 0.1.18
+        helm:
+          releaseName: demo-ms-10
+          valuesObject:
+            name: demo-ms-10
+            namespace: demo
+            image: paulofponciano/demo-ms-intercomunicacao:latest
+            replicas: 1
+            env:
+              - name: TITLE
+                value: "Microservice 10"
+              - name: RESPONSE_TIME
+                value: "0"
+              - name: EXTERNAL_CALL_URL
+                value: "http://demo-ms-11.demo.svc.cluster.local:5000"
+              - name: EXTERNAL_CALL_METHOD
+                value: "GET"
+              - name: APP_VERSION
+                value: "0.1.4"
+            service:
+              portName: http
+              port: 5000
+              protocol: TCP
+              targetPort: 5000
+            istio:
+              virtualService:
+                enabled: true
+                protocol: http
+                retries:
+                  attempts: 2
+                  perTryTimeout: 500ms
+                  retryOn: connect-failure,refused-stream,unavailable,cancelled,503
+              gateway:
+                enabled: false
+                name: demo-ms-10-gateway
+                host: demo-ms-intercomunicacao.sevira.cloud
+                selector: ingressgateway
+            prometheus:
+              scrape: false
+              path: /metrics
+              port: 5000
+            livenessProbe:
+              enabled: true
+              path: /healthz
+              initialDelaySeconds: 5
+              periodSeconds: 10
+              timeoutSeconds: 5
+              failureThreshold: 5
+            readinessProbe:
+              enabled: true
+              path: /ready
+              initialDelaySeconds: 5
+              periodSeconds: 10
+              timeoutSeconds: 5
+              failureThreshold: 5
+            strategy:
+              type: canary
+              canary:
+                steps:
+                - setWeight: 10
+                - pause: { duration: 30s }
+                - analysis:
+                    templates:
+                    - templateName: demo-ms-10-check-success
+                - setWeight: 20
+                - pause: { duration: 1m }
+                - analysis:
+                    templates:
+                    - templateName: demo-ms-10-check-success
+                - setWeight: 40
+                - pause: { duration: 1m }
+                - analysis:
+                    templates:
+                    - templateName: demo-ms-10-check-success
+                - setWeight: 80
+                - pause: { duration: 1m }
+                - analysis:
+                    templates:
+                    - templateName: demo-ms-10-check-success
+                - setWeight: 100
+            analysisTemplates:
+                - name: 'demo-ms-10-check-success'
+                  spec:
+                    metrics:
+                    - name: success-rate
+                      interval: 1m
+                      successCondition: result[0] >= 0.95
+                      failureLimit: 1
+                      provider:
+                        prometheus:
+                          address: http://kube-prometheus-stack-prometheus.o11y.svc.cluster.local:9090
+                          query: |
+                            sum(irate(
+                              istio_requests_total{destination_service=~"demo-ms-10.demo.svc.cluster.local",response_code!~"5.*"}[1m]
+                            )) /
+                            sum(irate(
+                              istio_requests_total{destination_service=~"demo-ms-10.demo.svc.cluster.local"}[1m]
+                            ))
+                      count: 1
+      destination:
+        server: '{{ cluster }}'
+        namespace: argocd
+      syncPolicy:
+        automated: {}
