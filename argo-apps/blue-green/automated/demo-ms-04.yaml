@@ -113,7 +113,7 @@ spec:
                       failureLimit: 1
                       provider:
                         prometheus:
-                          address: http://prometheus-kube-prometheus-prometheus.o11y.svc.cluster.local:9090
+                          address: http://kube-prometheus-stack-prometheus.o11y.svc.cluster.local:9090
                           query: |
                             sum(irate(
                               istio_requests_total{destination_service=~"demo-ms-4-green.demo.svc.cluster.local",response_code!~"5.*"}[1m]
