@@ -1,84 +1,129 @@
-# apiVersion: argoproj.io/v1alpha1
-# kind: ApplicationSet
-# metadata:
-#   name: demo-ms-5
-#   namespace: argocd
-# spec:
-#   generators:
-#     - list:
-#         elements:
-#           - cluster: https://kubernetes.default.svc
-#   template:
-#     metadata:
-#       name: demo-ms-5
-#     spec:
-#       project: "lab-apps-blue-green"
-#       source:
-#         repoURL: 'registry-1.docker.io/paulofponciano'
-#         chart: demo-ms-intercomunicacao
-#         targetRevision: 0.1.15
-#         helm:
-#           releaseName: demo-ms-5
-#           valuesObject:
-#             name: demo-ms-5
-#             namespace: demo
-#             image: paulofponciano/demo-ms-intercomunicacao:latest
-#             replicas: 1
-#             env:
-#               - name: TITLE
-#                 value: "Microservice 5"
-#               - name: RESPONSE_TIME
-#                 value: "0"
-#               - name: EXTERNAL_CALL_URL
-#                 value: "http://demo-ms-6.demo.svc.cluster.local:5000"
-#               - name: EXTERNAL_CALL_METHOD
-#                 value: "GET"
-#               - name: APP_VERSION
-#                 value: "0.1.5"
-#             service:
-#               portName: http
-#               port: 5000
-#               protocol: TCP
-#               targetPort: 5000
-#             istio:
-#               virtualService:
-#                 enabled: true
-#                 protocol: http
-#                 retries:
-#                   attempts: 2
-#                   perTryTimeout: 500ms
-#                   retryOn: connect-failure,refused-stream,unavailable,cancelled,503
-#               gateway:
-#                 enabled: false
-#                 name: demo-ms-5-gateway
-#                 host: demo-ms-intercomunicacao.sevira.cloud
-#                 selector: ingressgateway
-#             prometheus:
-#                 scrape: false
-#                 path: /metrics
-#                 port: 5000
-#             livenessProbe:
-#                 enabled: true
-#                 path: /healthz
-#                 initialDelaySeconds: 5
-#                 periodSeconds: 10
-#                 timeoutSeconds: 5
-#                 failureThreshold: 5
-#             readinessProbe:
-#               enabled: true
-#               path: /ready
-#               initialDelaySeconds: 5
-#               periodSeconds: 10
-#               timeoutSeconds: 5
-#               failureThreshold: 5
-#             strategy:
-#               type: blueGreen
-#               blueGreen:
-#                 activeService: demo-ms-5
-#                 previewService: demo-ms-5-green
-#                 autoPromotionEnabled: false
-#       destination:
-#         server: '{{ cluster }}'
-#         namespace: argocd
-#       syncPolicy:
-#         automated: {}
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: demo-ms-5
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: https://kubernetes.default.svc
+  template:
+    metadata:
+      name: demo-ms-5
+    spec:
+      project: "lab-apps-blue-green"
+      source:
+        repoURL: 'registry-1.docker.io/paulofponciano'
+        chart: demo-ms-intercomunicacao
+        targetRevision: 0.1.17
+        helm:
+          releaseName: demo-ms-5
+          valuesObject:
+            name: demo-ms-5
+            namespace: demo
+            image: paulofponciano/demo-ms-intercomunicacao:latest
+            replicas: 1
+            env:
+              - name: TITLE
+                value: "Microservice 5"
+              - name: RESPONSE_TIME
+                value: "0"
+              - name: EXTERNAL_CALL_URL
+                value: "http://demo-ms-6.demo.svc.cluster.local:5000"
+              - name: EXTERNAL_CALL_METHOD
+                value: "GET"
+              - name: APP_VERSION
+                value: "0.1.13"
+            service:
+              portName: http
+              port: 5000
+              protocol: TCP
+              targetPort: 5000
+            istio:
+              virtualService:
+                enabled: true
+                protocol: http
+                retries:
+                  attempts: 2
+                  perTryTimeout: 500ms
+                  retryOn: connect-failure,refused-stream,unavailable,cancelled,503
+              gateway:
+                enabled: false
+                name: demo-ms-5-gateway
+                host: demo-ms-intercomunicacao.sevira.cloud
+                selector: ingressgateway
+            prometheus:
+              scrape: false
+              path: /metrics
+              port: 5000
+            livenessProbe:
+                enabled: true
+                path: /healthz
+                initialDelaySeconds: 5
+                periodSeconds: 10
+                timeoutSeconds: 5
+                failureThreshold: 5
+            readinessProbe:
+              enabled: true
+              path: /ready
+              initialDelaySeconds: 5
+              periodSeconds: 10
+              timeoutSeconds: 5
+              failureThreshold: 5
+            strategy:
+              type: blueGreen
+              blueGreen:
+                activeService: demo-ms-5
+                previewService: demo-ms-5-green
+                autoPromotionEnabled: false
+                prePromotionAnalysis:
+                  templates:
+                  - templateName: demo-ms-5-http-bench-analysis
+                  - templateName: demo-ms-5-check-success
+            analysisTemplates:
+                - name: demo-ms-5-http-bench-analysis
+                  spec:
+                    metrics:
+                    - name: http-bench-analysis
+                      failureLimit: 1
+                      provider:
+                        job:
+                          spec:
+                            backoffLimit: 1
+                            template:
+                              metadata:
+                                labels:
+                                  istio-injection: disabled
+                                  sidecar.istio.io/inject: "false"
+                              spec:
+                                containers:
+                                - name: http-bench-analysis
+                                  image: rogerw/cassowary:v0.14.0
+                                  command: ["cassowary"]
+                                  args: ["run", "-u", "http://demo-ms-4-green.demo.svc.cluster.local:5000/healthz", "-c", "3", "-n", "1000"]
+                                restartPolicy: Never
+                    count: 1
+                - name: 'demo-ms-5-check-success'
+                  spec:
+                    metrics:
+                    - name: success-rate
+                      interval: 1m
+                      successCondition: result[0] >= 0.95
+                      failureLimit: 1
+                      provider:
+                        prometheus:
+                          address: http://kube-prometheus-stack-prometheus.o11y.svc.cluster.local:9090
+                          query: |
+                            sum(irate(
+                              istio_requests_total{destination_service=~"demo-ms-5-green.demo.svc.cluster.local",response_code!~"5.*"}[1m]
+                            )) /
+                            sum(irate(
+                              istio_requests_total{destination_service=~"demo-ms-5-green.demo.svc.cluster.local"}[1m]
+                            ))
+                      count: 1
+      destination:
+        server: '{{ cluster }}'
+        namespace: argocd
+      syncPolicy:
+        automated: {}
