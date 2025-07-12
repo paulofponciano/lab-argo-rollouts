@@ -81,4 +81,8 @@ spec:
       activeService: {{ .Values.strategy.blueGreen.activeService }}
       previewService: {{ .Values.strategy.blueGreen.previewService }}
       autoPromotionEnabled: {{ .Values.strategy.blueGreen.autoPromotionEnabled }}
+      {{- if .Values.strategy.blueGreen.prePromotionAnalysis }}
+      prePromotionAnalysis:
+{{ toYaml .Values.strategy.blueGreen.prePromotionAnalysis | nindent 8 }}
+      {{- end }}
 {{- end }}
