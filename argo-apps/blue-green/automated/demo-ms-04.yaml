@@ -79,10 +79,10 @@ spec:
                 autoPromotionEnabled: false
                 prePromotionAnalysis:
                   templates:
-                  - templateName: http-bench-analysis
+                  - templateName: demo-ms-4-http-bench-analysis
                   - templateName: demo-ms-4-check-success
             analysisTemplates:
-                - name: http-bench-analysis
+                - name: demo-ms-4-http-bench-analysis
                   spec:
                     metrics:
                     - name: http-bench-analysis
