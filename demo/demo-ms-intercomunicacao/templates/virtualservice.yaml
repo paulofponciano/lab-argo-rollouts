@@ -42,16 +42,27 @@ spec:
         attempts: {{ .Values.istio.virtualService.retries.attempts }}
         perTryTimeout: {{ .Values.istio.virtualService.retries.perTryTimeout }}
         retryOn: {{ .Values.istio.virtualService.retries.retryOn }}
-      {{- if and .Values.istio.virtualService.mirror.enabled .Values.istio.virtualService.mirror.host }}
-      mirror:
-        host: {{ .Values.istio.virtualService.mirror.host }}
-        port:
-          number: {{ .Values.istio.virtualService.mirror.port | quote }}
-      {{- if .Values.istio.virtualService.mirror.percent }}
-      mirrorPercentage:
-        value: {{ .Values.istio.virtualService.mirror.percent }}
-      {{- end }}
-      {{- end }}
   {{- else if eq (upper .Values.istio.virtualService.protocol) "TCP" }}
+  tcp:
+    - match:
+        - port: {{ .Values.service.port | default 5000 }}
+      route:
+        {{- if eq .Values.strategy.type "canary" }}
+        - destination:
+            host: {{ printf "%s.%s.svc.cluster.local" .Values.name .Values.namespace }}
+            port:
+              number: {{ .Values.service.port | default 5000 }}
+          weight: 100
+        - destination:
+            host: {{ printf "%s-canary.%s.svc.cluster.local" .Values.name .Values.namespace }}
+            port:
+              number: {{ .Values.service.port | default 5000 }}
+          weight: 0
+        {{- else }}
+        - destination:
+            host: {{ printf "%s.%s.svc.cluster.local" .Values.name .Values.namespace }}
+            port:
+              number: {{ .Values.service.port | default 5000 }}
+        {{- end }}
   {{- end }}
 {{- end }}
