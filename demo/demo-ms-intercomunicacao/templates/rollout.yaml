@@ -75,7 +75,7 @@ spec:
             name: {{ .Values.name }}
             routes:
               - default
-{{- if and .Values.istio.virtualService.mirror .Values.istio.virtualService.mirror.enabled }}
+{{- if .Values.istio.virtualService.mirror }}
           mirror:
             host: {{ .Values.istio.virtualService.mirror.host }}
             port: {{ .Values.istio.virtualService.mirror.port }}
