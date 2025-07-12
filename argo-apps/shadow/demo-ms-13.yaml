@@ -16,7 +16,7 @@ spec:
       source:
         repoURL: 'registry-1.docker.io/paulofponciano'
         chart: demo-ms-intercomunicacao
-        targetRevision: 0.1.20
+        targetRevision: 0.1.19
         helm:
           releaseName: demo-ms-13
           valuesObject:
@@ -51,7 +51,7 @@ spec:
                 mirror:
                     host: demo-ms-13-shadow.demo.svc.cluster.local
                     port: "5000"
-                    percent: 5
+                    percent: 10
               gateway:
                 enabled: false
                 name: demo-ms-13-gateway
@@ -83,6 +83,7 @@ spec:
                 - pause: { }
                 - setWeight: 10
                 - pause: { }
+                  percentage: 5
                 - setWeight: 20
                 - pause: { }
                 - setWeight: 40
