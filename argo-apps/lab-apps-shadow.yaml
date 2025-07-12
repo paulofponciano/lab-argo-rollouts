@@ -1,0 +1,44 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: lab-apps-shadow
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Lab Apps with Argo Rollouts
+  sourceRepos:
+    - 'https://github.com/paulofponciano/lab-argo-rollouts'
+    - 'oci://registry-1.docker.io/paulofponciano'
+    - 'registry-1.docker.io/paulofponciano'
+  destinations:
+    - namespace: '*'
+      server: 'https://kubernetes.default.svc'
+      name: 'in-cluster'
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  orphanedResources:
+    warn: false
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: lab-apps-shadow
+  namespace: argocd
+spec:
+  project: lab-apps-shadow
+  source:
+    repoURL: https://github.com/paulofponciano/lab-argo-rollouts
+    path: argo-apps/shadow
+    targetRevision: HEAD
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

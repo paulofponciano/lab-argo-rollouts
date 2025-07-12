@@ -75,6 +75,12 @@ spec:
             name: {{ .Values.name }}
             routes:
               - default
+{{- if and .Values.istio.virtualService.mirror .Values.istio.virtualService.mirror.enabled }}
+          mirror:
+            host: {{ .Values.istio.virtualService.mirror.host }}
+            port: {{ .Values.istio.virtualService.mirror.port }}
+            percent: {{ .Values.istio.virtualService.mirror.percent }}
+{{- end }}
 {{- end }}
 {{- else if eq .Values.strategy.type "blueGreen" }}
     blueGreen:
