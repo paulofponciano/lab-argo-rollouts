@@ -1,0 +1,84 @@
+# apiVersion: argoproj.io/v1alpha1
+# kind: ApplicationSet
+# metadata:
+#   name: demo-ms-6
+#   namespace: argocd
+# spec:
+#   generators:
+#     - list:
+#         elements:
+#           - cluster: https://kubernetes.default.svc
+#   template:
+#     metadata:
+#       name: demo-ms-6
+#     spec:
+#       project: "lab-apps-blue-green"
+#       source:
+#         repoURL: 'registry-1.docker.io/paulofponciano'
+#         chart: demo-ms-intercomunicacao
+#         targetRevision: 0.1.15
+#         helm:
+#           releaseName: demo-ms-6
+#           valuesObject:
+#             name: demo-ms-6
+#             namespace: demo
+#             image: paulofponciano/demo-ms-intercomunicacao:latest
+#             replicas: 1
+#             env:
+#               - name: TITLE
+#                 value: "Microservice 6"
+#               - name: RESPONSE_TIME
+#                 value: "0"
+#               - name: EXTERNAL_CALL_URL
+#                 value: ""
+#               - name: EXTERNAL_CALL_METHOD
+#                 value: "GET"
+#               - name: APP_VERSION
+#                 value: "0.1.4"
+#             service:
+#               portName: http
+#               port: 5000
+#               protocol: TCP
+#               targetPort: 5000
+#             istio:
+#               virtualService:
+#                 enabled: true
+#                 protocol: http
+#                 retries:
+#                   attempts: 2
+#                   perTryTimeout: 500ms
+#                   retryOn: connect-failure,refused-stream,unavailable,cancelled,503
+#               gateway:
+#                 enabled: false
+#                 name: demo-ms-6-gateway
+#                 host: demo-ms-intercomunicacao.sevira.cloud
+#                 selector: ingressgateway
+#             prometheus:
+#               scrape: false
+#               path: /metrics
+#               port: 5000
+#             livenessProbe:
+#                 enabled: true
+#                 path: /healthz
+#                 initialDelaySeconds: 5
+#                 periodSeconds: 10
+#                 timeoutSeconds: 5
+#                 failureThreshold: 5
+#             readinessProbe:
+#               enabled: true
+#               path: /ready
+#               initialDelaySeconds: 5
+#               periodSeconds: 10
+#               timeoutSeconds: 5
+#               failureThreshold: 5
+#             strategy:
+#               type: blueGreen
+#               blueGreen:
+#                 activeService: demo-ms-6
+#                 previewService: demo-ms-6-green
+#                 autoPromotionEnabled: false
+#       destination:
+#         server: '{{ cluster }}'
+#         namespace: argocd
+#       syncPolicy:
+#         automated: {}
