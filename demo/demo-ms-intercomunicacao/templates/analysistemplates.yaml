@@ -1,0 +1,12 @@
+{{- if and .Values.strategy.blueGreen.prePromotionAnalysis .Values.analysisTemplates }}
+  {{- range .Values.analysisTemplates }}
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: {{ .name }}
+  namespace: {{ $.Values.namespace }}
+spec:
+{{ toYaml .spec | nindent 2 }}
+---
+  {{- end }}
+{{- end }}
