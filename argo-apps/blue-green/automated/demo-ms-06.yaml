@@ -101,7 +101,7 @@ spec:
                                 - name: http-bench-analysis
                                   image: rogerw/cassowary:v0.14.0
                                   command: ["cassowary"]
-                                  args: ["run", "-u", "http://demo-ms-4-green.demo.svc.cluster.local:5000/healthz", "-c", "3", "-n", "1000"]
+                                  args: ["run", "-u", "http://demo-ms-6-green.demo.svc.cluster.local:5000/healthz", "-c", "3", "-n", "1000"]
                                 restartPolicy: Never
                     count: 1
                 - name: 'demo-ms-6-check-success'
