@@ -67,7 +67,7 @@
     {
       "gridPos": {
         "h": 3,
-        "w": 3,
+        "w": 4,
         "x": 0,
         "y": 0
       },
@@ -82,6 +82,7 @@
         "mode": "markdown"
       },
       "pluginVersion": "12.0.2",
+      "transparent": true,
       "type": "text"
     },
     {
@@ -111,8 +112,8 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# Availability\n\n- SLI: The percentage of successful requests served by the service over a 24-hour period\n- SLO: At least 96% of requests must be successful over a 24-hour period\n- Error budget: 4% of requests that are allowed to fail within a 24-hour period, given a 96% SLO",
-        "mode": "markdown"
+        "content": "<div style=\"background-color: #ffe082; color: #000; padding: 10px; border-radius: 8px;\">\n  <h2>Availability</h2>\n  <ul>\n    <li><b>SLI:</b> The percentage of successful requests served by the service over a 24-hour period</li>\n    <li><b>SLO:</b> At least 96% of requests must be successful over a 24-hour period</li>\n    <li><b>Error budget:</b> 4% of requests that are allowed to fail within a 24-hour period, given a 96% SLO</li>\n  </ul>\n</div>",
+        "mode": "html"
       },
       "pluginVersion": "12.0.2",
       "type": "text"
@@ -763,6 +764,19 @@
         "x": 0,
         "y": 41
       },
+      "id": 17,
+      "panels": [],
+      "title": "Traffic",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 42
+      },
       "id": 10,
       "panels": [],
       "title": "Latency",
@@ -774,7 +788,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 42
+        "y": 43
       },
       "id": 11,
       "panels": [],
@@ -787,7 +801,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 43
+        "y": 44
       },
       "id": 12,
       "panels": [],
@@ -808,6 +822,6 @@
   "timezone": "browser",
   "title": "SLO draft",
   "uid": "9c388eba-df87-4d2a-93c2-7446b1495f54",
-  "version": 27,
+  "version": 34,
   "weekStart": ""
 }
