@@ -112,11 +112,221 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "<div style=\"background-color: #ffe082; color: #000; padding: 10px; border-radius: 8px;\">\n  <h2>Availability</h2>\n  <ul>\n    <li><b>SLI:</b> The percentage of successful requests served by the service over a 24-hour period</li>\n    <li><b>SLO:</b> At least 96% of requests must be successful over a 24-hour period</li>\n    <li><b>Error budget:</b> 4% of requests that are allowed to fail within a 24-hour period, given a 96% SLO</li>\n  </ul>\n</div>",
+        "content": "<div style=\"background-color: #ffe082; color: #000; padding: 10px; border-radius: 8px;\">\n  <h2>Availability</h2>\n  <ul>\n    <li><b>SLI:</b> The percentage of successful requests served by the service over a <b>24-hour</b> period.</li>\n    <li><b>SLO:</b> At least 99% of requests must be successful over a <b>24-hour</b> period.</li>\n    <li><b>Error budget:</b> 1% of requests that are allowed to fail within a <b>24-hour</b> period, given a 99% SLO.</li>\n  </ul>\n</div>",
         "mode": "html"
       },
       "pluginVersion": "12.0.2",
       "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "text"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 0,
+        "y": 8
+      },
+      "id": 5,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "sum(increase(istio_requests_total{destination_service=~\"${service}\"}[$__range]))",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Total reqs",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {}
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "dark-green"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 8,
+        "y": 8
+      },
+      "id": 24,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "sum(increase(istio_requests_total{destination_service=~\"${service}\", response_code!~\"5.*\"}[$__range]))",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Client Success Reqs (non-5xx responses)",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {}
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "dark-yellow"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 16,
+        "y": 8
+      },
+      "id": 25,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "sum(increase(istio_requests_total{destination_service=~\"${service}\", response_code=~\"5.*\"}[$__range]))",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Client Failure Reqs (5xx responses)",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {}
+        }
+      ],
+      "type": "stat"
     },
     {
       "datasource": {
@@ -158,7 +368,7 @@
               "mode": "none"
             },
             "thresholdsStyle": {
-              "mode": "off"
+              "mode": "dashed"
             }
           },
           "mappings": [],
@@ -166,11 +376,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
+                "color": "dark-green"
               }
             ]
           }
@@ -204,9 +410,9 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 12,
+        "w": 24,
         "x": 0,
-        "y": 8
+        "y": 12
       },
       "id": 3,
       "options": {
@@ -237,100 +443,7 @@
           "refId": "B"
         }
       ],
-      "title": "Success rate (%)",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 35,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "dashed"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "percentage",
-            "steps": [
-              {
-                "color": "dark-green"
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 8
-      },
-      "id": 5,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.0.2",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "sum(increase(istio_requests_total{destination_service=~\"${service}\"}[1d]))",
-          "instant": true,
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "B"
-        }
-      ],
-      "title": "Total reqs",
+      "title": "Success rate (%) [1m]",
       "type": "timeseries"
     },
     {
@@ -385,11 +498,11 @@
               },
               {
                 "color": "dark-red",
-                "value": 95
+                "value": 98
               },
               {
                 "color": "dark-orange",
-                "value": 96
+                "value": 99
               }
             ]
           }
@@ -400,7 +513,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 17
+        "y": 21
       },
       "id": 6,
       "options": {
@@ -424,7 +537,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "(\n  sum(increase(istio_requests_total{destination_service=~\"${service}\", response_code!~\"5.*\"}[1d]))\n  /\n  sum(increase(istio_requests_total{destination_service=~\"${service}\"}[1d]))\n) * 100",
+          "expr": "(\n  sum(increase(istio_requests_total{destination_service=~\"${service}\", response_code!~\"5.*\"}[$__range]))\n  /\n  sum(increase(istio_requests_total{destination_service=~\"${service}\"}[$__range]))\n) * 100",
           "instant": true,
           "legendFormat": "__auto",
           "range": true,
@@ -486,7 +599,7 @@
               },
               {
                 "color": "dark-orange",
-                "value": 4
+                "value": 1
               }
             ]
           }
@@ -499,7 +612,7 @@
               "options": {
                 "mode": "exclude",
                 "names": [
-                  "(\n  sum(increase(istio_requests_total{destination_service=~\"demo-ms-12.demo.svc.cluster.local\", response_code=~\"5.*\"}[1d]))\n  /\n  sum(increase(istio_requests_total{destination_service=~\"demo-ms-12.demo.svc.cluster.local\"}[1d]))\n) * 100"
+                  "(\n  sum(increase(istio_requests_total{destination_service=~\"demo-ms-12.demo.svc.cluster.local\", response_code=~\"5.*\"}[86400s]))\n  /\n  sum(increase(istio_requests_total{destination_service=~\"demo-ms-12.demo.svc.cluster.local\"}[86400s]))\n) * 100"
                 ],
                 "prefix": "All except:",
                 "readOnly": true
@@ -522,7 +635,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 26
+        "y": 30
       },
       "id": 7,
       "options": {
@@ -547,7 +660,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "(\n  sum(increase(istio_requests_total{destination_service=~\"${service}\", response_code=~\"5.*\"}[1d]))\n  /\n  sum(increase(istio_requests_total{destination_service=~\"${service}\"}[1d]))\n) * 100",
+          "expr": "(\n  sum(increase(istio_requests_total{destination_service=~\"${service}\", response_code=~\"5.*\"}[$__range]))\n  /\n  sum(increase(istio_requests_total{destination_service=~\"${service}\"}[$__range]))\n) * 100",
           "instant": true,
           "legendFormat": "__auto",
           "range": true,
@@ -620,7 +733,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 26
+        "y": 30
       },
       "id": 8,
       "options": {
@@ -644,7 +757,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "(\n  sum(increase(istio_requests_total{destination_service=~\"${service}\", response_code=~\"5.*\"}[1d]))\n  /\n  sum(increase(istio_requests_total{destination_service=~\"${service}\"}[1d]))\n) / 0.04",
+          "expr": "(\n  sum(increase(istio_requests_total{destination_service=~\"${service}\", response_code=~\"5.*\"}[$__range]))\n  /\n  sum(increase(istio_requests_total{destination_service=~\"${service}\"}[$__range]))\n) / 0.04",
           "instant": true,
           "legendFormat": "__auto",
           "range": true,
@@ -680,7 +793,7 @@
         "h": 3,
         "w": 12,
         "x": 0,
-        "y": 35
+        "y": 39
       },
       "id": 15,
       "options": {
@@ -708,14 +821,13 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "max_over_time(\n  (\n    sum(increase(istio_requests_total{destination_service=~\"${service}\", response_code=~\"5.*\"}[24h]))\n    /\n    sum(increase(istio_requests_total{destination_service=~\"${service}\"}[24h])\n  ) * 100\n)[24h:]\n)",
+          "expr": "max_over_time(\n  (\n    sum(increase(istio_requests_total{destination_service=~\"${service}\", response_code=~\"5.*\"}[$__range]))\n    /\n    sum(increase(istio_requests_total{destination_service=~\"${service}\"}[$__range])\n  ) * 100\n)[24h:]\n)",
           "instant": true,
           "legendFormat": "__auto",
           "range": true,
           "refId": "B"
         }
       ],
-      "timeFrom": "24h",
       "title": "Error budget (%) - max_over_time",
       "type": "stat"
     },
@@ -725,7 +837,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 38
+        "y": 42
       },
       "id": 17,
       "panels": [],
@@ -738,7 +850,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 39
+        "y": 43
       },
       "id": 10,
       "panels": [],
@@ -750,7 +862,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 40
+        "y": 44
       },
       "id": 22,
       "options": {
@@ -759,7 +871,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "<div style=\"background-color: #ffe082; color: #000; padding: 10px; border-radius: 8px;\">\n  <h2>Latency</h2>\n  <ul>\n    <li><b>SLI:</b> The percentage of successful requests served by the service over a 24-hour period</li>\n    <li><b>SLO:</b> At least 96% of requests must be successful over a 24-hour period</li>\n    <li><b>Error budget:</b> 4% of requests that are allowed to fail within a 24-hour period, given a 96% SLO</li>\n  </ul>\n</div>",
+        "content": "<div style=\"background-color: #ffe082; color: #000; padding: 10px; border-radius: 8px;\">\n  <h2>Latency</h2>\n  <ul>\n    <li><b>SLI:</b> The percentage of successful HTTP GET requests with latency below <b>25ms</b> over a <b>24-hour</b> period.</li>\n    <li><b>SLO:</b> At least <b>99%</b> of successful HTTP GET requests must have latency below <b>25ms</b> over a <b>24-hour</b> period.</li>\n    <li><b>Error budget:</b> Up to <b>1%</b> of successful HTTP GET requests are allowed to exceed <b>25ms</b> latency within a <b>24-hour</b> period, given a 99% SLO.</li>\n  </ul>\n</div>",
         "mode": "html"
       },
       "pluginVersion": "12.0.2",
@@ -817,7 +929,7 @@
               },
               {
                 "color": "dark-orange",
-                "value": 4
+                "value": 25
               }
             ]
           }
@@ -828,7 +940,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 44
+        "y": 48
       },
       "id": 18,
       "options": {
@@ -853,7 +965,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "histogram_quantile(\n  0.99,\n  sum by (le) (\n    rate(istio_request_duration_milliseconds_bucket{response_code=~\"2..\", destination_service=\"${service}\"}[24h])\n  )\n)",
+          "expr": "histogram_quantile(\n  0.99,\n  sum by (le) (\n    rate(istio_request_duration_milliseconds_bucket{response_code=~\"2..\", destination_service=\"${service}\"}[$__range])\n  )\n)",
           "instant": true,
           "legendFormat": "__auto",
           "range": true,
@@ -861,6 +973,100 @@
         }
       ],
       "title": "p99",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": true,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 35,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "dashed"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-green"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 48
+      },
+      "id": 21,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "histogram_quantile(\n  0.90,\n  sum by (le) (\n    rate(istio_request_duration_milliseconds_bucket{response_code=~\"2..\", destination_service=\"${service}\"}[$__range])\n  )\n)",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "p90",
       "type": "timeseries"
     },
     {
@@ -924,7 +1130,7 @@
               "options": {
                 "mode": "exclude",
                 "names": [
-                  "histogram_quantile(\n  0.50,\n  sum by (le) (\n    rate(istio_request_duration_milliseconds_bucket{response_code=~\"2..\", destination_service=\"demo-ms-12.demo.svc.cluster.local\"}[24h])\n  )\n)"
+                  "histogram_quantile(\n  0.85,\n  sum by (le) (\n    rate(istio_request_duration_milliseconds_bucket{response_code=~\"2..\", destination_service=\"demo-ms-12.demo.svc.cluster.local\"}[86400s])\n  )\n)"
                 ],
                 "prefix": "All except:",
                 "readOnly": true
@@ -946,10 +1152,10 @@
       "gridPos": {
         "h": 9,
         "w": 12,
-        "x": 12,
-        "y": 44
+        "x": 0,
+        "y": 57
       },
-      "id": 20,
+      "id": 23,
       "options": {
         "legend": {
           "calcs": [],
@@ -972,14 +1178,14 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "histogram_quantile(\n  0.50,\n  sum by (le) (\n    rate(istio_request_duration_milliseconds_bucket{response_code=~\"2..\", destination_service=\"${service}\"}[24h])\n  )\n)",
+          "expr": "histogram_quantile(\n  0.85,\n  sum by (le) (\n    rate(istio_request_duration_milliseconds_bucket{response_code=~\"2..\", destination_service=\"${service}\"}[$__range])\n  )\n)",
           "instant": true,
           "legendFormat": "__auto",
           "range": true,
           "refId": "B"
         }
       ],
-      "title": "p50",
+      "title": "p85",
       "type": "timeseries"
     },
     {
@@ -1035,15 +1241,40 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "histogram_quantile(\n  0.50,\n  sum by (le) (\n    rate(istio_request_duration_milliseconds_bucket{response_code=~\"2..\", destination_service=\"demo-ms-12.demo.svc.cluster.local\"}[86400s])\n  )\n)"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 9,
         "w": 12,
-        "x": 0,
-        "y": 53
+        "x": 12,
+        "y": 57
       },
-      "id": 21,
+      "id": 20,
       "options": {
         "legend": {
           "calcs": [],
@@ -1066,14 +1297,14 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "histogram_quantile(\n  0.90,\n  sum by (le) (\n    rate(istio_request_duration_milliseconds_bucket{response_code=~\"2..\", destination_service=\"${service}\"}[24h])\n  )\n)",
+          "expr": "histogram_quantile(\n  0.50,\n  sum by (le) (\n    rate(istio_request_duration_milliseconds_bucket{response_code=~\"2..\", destination_service=\"${service}\"}[$__range])\n  )\n)",
           "instant": true,
           "legendFormat": "__auto",
           "range": true,
           "refId": "B"
         }
       ],
-      "title": "p90",
+      "title": "p50",
       "type": "timeseries"
     },
     {
@@ -1082,7 +1313,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 62
+        "y": 66
       },
       "id": 11,
       "panels": [],
@@ -1095,7 +1326,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 63
+        "y": 67
       },
       "id": 12,
       "panels": [],
@@ -1150,6 +1381,6 @@
   "timezone": "browser",
   "title": "SLO draft",
   "uid": "9c388eba-df87-4d2a-93c2-7446b1495f54",
-  "version": 53,
+  "version": 70,
   "weekStart": ""
 }
