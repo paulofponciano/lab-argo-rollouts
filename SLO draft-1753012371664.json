@@ -121,7 +121,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -230,7 +230,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "(\n  sum(irate(istio_requests_total{destination_service=~\"demo-ms-12.demo.svc.cluster.local\",response_code!~\"5.*\"}[1m]))\n  /\n  sum(irate(istio_requests_total{destination_service=~\"demo-ms-12.demo.svc.cluster.local\"}[1m]))\n) * 100",
+          "expr": "(\n  sum(irate(istio_requests_total{destination_service=~\"${service}\",response_code!~\"5.*\"}[1m]))\n  /\n  sum(irate(istio_requests_total{destination_service=~\"${service}\"}[1m]))\n) * 100",
           "instant": true,
           "legendFormat": "__auto",
           "range": true,
@@ -243,7 +243,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -323,7 +323,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(increase(istio_requests_total{destination_service=~\"demo-ms-12.demo.svc.cluster.local\"}[1h]))",
+          "expr": "sum(increase(istio_requests_total{destination_service=~\"${service}\"}[1d]))",
           "instant": true,
           "legendFormat": "__auto",
           "range": true,
@@ -336,7 +336,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -424,7 +424,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "(\n  sum(increase(istio_requests_total{destination_service=~\"demo-ms-12.demo.svc.cluster.local\", response_code!~\"5.*\"}[1d]))\n  /\n  sum(increase(istio_requests_total{destination_service=~\"demo-ms-12.demo.svc.cluster.local\"}[1d]))\n) * 100",
+          "expr": "(\n  sum(increase(istio_requests_total{destination_service=~\"${service}\", response_code!~\"5.*\"}[1d]))\n  /\n  sum(increase(istio_requests_total{destination_service=~\"${service}\"}[1d]))\n) * 100",
           "instant": true,
           "legendFormat": "__auto",
           "range": true,
@@ -437,7 +437,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -491,7 +491,32 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "(\n  sum(increase(istio_requests_total{destination_service=~\"demo-ms-12.demo.svc.cluster.local\", response_code=~\"5.*\"}[1d]))\n  /\n  sum(increase(istio_requests_total{destination_service=~\"demo-ms-12.demo.svc.cluster.local\"}[1d]))\n) * 100"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 9,
@@ -521,7 +546,8 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "(\n  sum(increase(istio_requests_total{destination_service=~\"demo-ms-12.demo.svc.cluster.local\", response_code=~\"5.*\"}[1d]))\n  /\n  sum(increase(istio_requests_total{destination_service=~\"demo-ms-12.demo.svc.cluster.local\"}[1d]))\n) * 100",
+          "exemplar": false,
+          "expr": "(\n  sum(increase(istio_requests_total{destination_service=~\"${service}\", response_code=~\"5.*\"}[1d]))\n  /\n  sum(increase(istio_requests_total{destination_service=~\"${service}\"}[1d]))\n) * 100",
           "instant": true,
           "legendFormat": "__auto",
           "range": true,
@@ -534,7 +560,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -618,7 +644,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "(\n  sum(increase(istio_requests_total{destination_service=~\"demo-ms-12.demo.svc.cluster.local\", response_code=~\"5.*\"}[1d]))\n  /\n  sum(increase(istio_requests_total{destination_service=~\"demo-ms-12.demo.svc.cluster.local\"}[1d]))\n) / 0.04",
+          "expr": "(\n  sum(increase(istio_requests_total{destination_service=~\"${service}\", response_code=~\"5.*\"}[1d]))\n  /\n  sum(increase(istio_requests_total{destination_service=~\"${service}\"}[1d]))\n) / 0.04",
           "instant": true,
           "legendFormat": "__auto",
           "range": true,
@@ -631,7 +657,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -682,78 +708,15 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "max_over_time(\n  (\n    sum(increase(istio_requests_total{destination_service=~\"demo-ms-12.demo.svc.cluster.local\", response_code=~\"5.*\"}[24h]))\n    /\n    sum(increase(istio_requests_total{destination_service=~\"demo-ms-12.demo.svc.cluster.local\"}[24h])\n  ) * 100\n)[24h:]\n)",
+          "expr": "max_over_time(\n  (\n    sum(increase(istio_requests_total{destination_service=~\"${service}\", response_code=~\"5.*\"}[24h]))\n    /\n    sum(increase(istio_requests_total{destination_service=~\"${service}\"}[24h])\n  ) * 100\n)[24h:]\n)",
           "instant": true,
           "legendFormat": "__auto",
           "range": true,
           "refId": "B"
         }
       ],
+      "timeFrom": "24h",
       "title": "Error budget (%) - max_over_time",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "dark-green"
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 12,
-        "x": 0,
-        "y": 38
-      },
-      "id": 14,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "12.0.2",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "(\n  sum(increase(istio_requests_total{destination_service=~\"demo-ms-12.demo.svc.cluster.local\", response_code=~\"5.*\"}[24h]))\n  /\n  sum(increase(istio_requests_total{destination_service=~\"demo-ms-12.demo.svc.cluster.local\"}[24h]))\n) * 100",
-          "instant": true,
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "B"
-        }
-      ],
-      "title": "Error budget (%)",
       "type": "stat"
     },
     {
@@ -762,7 +725,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 41
+        "y": 38
       },
       "id": 17,
       "panels": [],
@@ -775,7 +738,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 42
+        "y": 39
       },
       "id": 10,
       "panels": [],
@@ -788,7 +751,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 43
+        "y": 40
       },
       "id": 11,
       "panels": [],
@@ -801,7 +764,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 44
+        "y": 41
       },
       "id": 12,
       "panels": [],
@@ -812,7 +775,37 @@
   "schemaVersion": 41,
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": {},
+        "label": "datasource",
+        "name": "datasource",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${datasource}"
+        },
+        "definition": "query_result(sum(istio_requests_total{}) by (destination_service) or sum(istio_tcp_sent_bytes_total{}) by (destination_service))",
+        "label": "Service",
+        "name": "service",
+        "options": [],
+        "query": {
+          "qryType": 3,
+          "query": "query_result(sum(istio_requests_total{}) by (destination_service) or sum(istio_tcp_sent_bytes_total{}) by (destination_service))",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "/.*destination_service=\"([^\"]*).*/",
+        "type": "query"
+      }
+    ]
   },
   "time": {
     "from": "now-24h",
@@ -822,6 +815,6 @@
   "timezone": "browser",
   "title": "SLO draft",
   "uid": "9c388eba-df87-4d2a-93c2-7446b1495f54",
-  "version": 34,
+  "version": 40,
   "weekStart": ""
 }
