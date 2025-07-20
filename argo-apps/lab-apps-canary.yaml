@@ -29,6 +29,8 @@ kind: Application
 metadata:
   name: lab-apps-canary-simple
   namespace: argocd
+  labels:
+    type: application
 spec:
   project: lab-apps-canary
   source:
@@ -48,6 +50,8 @@ kind: Application
 metadata:
   name: lab-apps-canary-metrics
   namespace: argocd
+  labels:
+    type: application
 spec:
   project: lab-apps-canary
   source:

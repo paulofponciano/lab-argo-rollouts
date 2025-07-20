@@ -29,6 +29,8 @@ kind: Application
 metadata:
   name: lab-apps-blue-green-simple
   namespace: argocd
+  labels:
+    type: application
 spec:
   project: lab-apps-blue-green
   source:
@@ -48,6 +50,8 @@ kind: Application
 metadata:
   name: lab-apps-blue-green-automated
   namespace: argocd
+  labels:
+    type: application
 spec:
   project: lab-apps-blue-green
   source:
