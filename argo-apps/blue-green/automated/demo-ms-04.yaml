@@ -121,7 +121,6 @@ spec:
                             sum(irate(
                               istio_requests_total{destination_service=~"demo-ms-4-green.demo.svc.cluster.local"}[1m]
                             ))
-                      count: 1
       destination:
         server: '{{ cluster }}'
         namespace: argocd
